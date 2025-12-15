@@ -32,8 +32,23 @@ export async function showStatus(screen: blessed.Widgets.Screen, api: ApiClient)
             tags: true,
             style: { fg: 'white' },
         });
+
+        // Add footer with instruction
+        blessed.box({
+            parent: screen,
+            content: 'Press any key to return to menu...',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            height: 1,
+            style: { bg: 'blue', fg: 'white' },
+        });
+
         screen.render();
         await waitForKeyPress(screen);
+
+        // Clear screen immediately after keypress to avoid confusion
+        clearScreen(screen);
     } catch (error) {
         showError(screen, (error as Error).message);
     }

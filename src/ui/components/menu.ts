@@ -79,7 +79,7 @@ export function createMenuScreen(
 
     // Menu section (updatable)
     const buildMenuContent = (sel: number) =>
-        ` ⚡︎ QUICK ACTIONS\n [${sel === 1 ? '*' : '1'}] Create New Head\n [${sel === 2 ? '*' : '2'}] View All Heads\n [${sel === 3 ? '*' : '3'}] Stop Head\n [${sel === 4 ? '*' : '4'}] Wallet Accounts\n [${sel === 5 ? '*' : '5'}] Nodes List\n [${sel === 6 ? '*' : '6'}] Health Status\n\n Enter selection (1-6): `;
+        ` ⚡︎ QUICK ACTIONS\n ${sel === 1 ? '>' : ' '}[1] Create New Head\n ${sel === 2 ? '>' : ' '}[2] View All Heads\n ${sel === 3 ? '>' : ' '}[3] Stop Head\n ${sel === 4 ? '>' : ' '}[4] Wallet Accounts\n ${sel === 5 ? '>' : ' '}[5] Nodes List\n ${sel === 6 ? '>' : ' '}[6] Health Status\n\n Enter selection (1-6): `;
 
     const menuBox = blessed.box({
         parent: main,
