@@ -1,0 +1,896 @@
+{
+    "swaggerDoc": {
+        "openapi": "3.0.0",
+        "paths": {
+            "/": {
+                "get": {
+                    "operationId": "AppController_getHello",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "tags": [
+                        "App Service"
+                    ]
+                }
+            },
+            "/health": {
+                "get": {
+                    "operationId": "AppController_healthCheck",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "summary": "Get health check info",
+                    "tags": [
+                        "App Service"
+                    ]
+                }
+            },
+            "/test-logger": {
+                "get": {
+                    "operationId": "AppController_testLogger",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "summary": "Test Winston logger - test all log levels",
+                    "tags": [
+                        "App Service"
+                    ]
+                }
+            },
+            "/hydra-main/ogmios": {
+                "get": {
+                    "operationId": "HydraMainController_getAccountInfo",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "summary": "Get ogmios info",
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/node-info": {
+                "get": {
+                    "operationId": "HydraMainController_getCardanoNodeInfo",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "summary": "Get node info",
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/login": {
+                "post": {
+                    "operationId": "HydraMainController_login",
+                    "parameters": [],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminLoginDto"
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/auth": {
+                "get": {
+                    "operationId": "HydraMainController_auth",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/list-account": {
+                "get": {
+                    "operationId": "HydraMainController_getListAccount",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/create-account": {
+                "post": {
+                    "operationId": "HydraMainController_createAccount",
+                    "parameters": [],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateAccountDto"
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/create-node": {
+                "post": {
+                    "operationId": "HydraMainController_createHydraNode",
+                    "parameters": [],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateHydraNodeDto"
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/hydra-nodes": {
+                "get": {
+                    "operationId": "HydraMainController_getListNode",
+                    "parameters": [
+                        {
+                            "name": "page",
+                            "required": false,
+                            "in": "query",
+                            "schema": {
+                                "type": "number"
+                            }
+                        },
+                        {
+                            "name": "limit",
+                            "required": false,
+                            "in": "query",
+                            "schema": {
+                                "type": "number"
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/hydra-node/{id}": {
+                "get": {
+                    "operationId": "HydraMainController_getNodeDetail",
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "required": true,
+                            "in": "path",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/create-party": {
+                "post": {
+                    "operationId": "HydraMainController_createHydraParty",
+                    "parameters": [],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreatePartyDto"
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/list-party": {
+                "get": {
+                    "operationId": "HydraMainController_getListHydraParty",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/active-party": {
+                "post": {
+                    "operationId": "HydraMainController_activeHydraParty",
+                    "parameters": [],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReqActivePartyDto"
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/deactive-party": {
+                "post": {
+                    "operationId": "HydraMainController_deactiveHydraParty",
+                    "parameters": [],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReqActivePartyDto"
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/clear-party-data": {
+                "post": {
+                    "operationId": "HydraMainController_clearData",
+                    "parameters": [],
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReqClearPartyDataDto"
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "201": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/utxo/{address}": {
+                "get": {
+                    "operationId": "HydraMainController_getListUtxo",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "required": true,
+                            "in": "path",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/hydra-main/active-nodes": {
+                "get": {
+                    "operationId": "HydraMainController_getActiveNodes",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": ""
+                        }
+                    },
+                    "security": [
+                        {
+                            "bearer": []
+                        }
+                    ],
+                    "summary": "Get active nodes",
+                    "tags": [
+                        "Hydra Main Service"
+                    ]
+                }
+            },
+            "/ogmios/test": {
+                "get": {
+                    "operationId": "OgmiosController_test",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": "Protocol parameters retrieved successfully"
+                        }
+                    },
+                    "summary": "Test Ogmios connection and get protocol parameters",
+                    "tags": [
+                        "Ogmios"
+                    ]
+                }
+            },
+            "/ogmios/protocol-parameters": {
+                "get": {
+                    "operationId": "OgmiosController_getProtocolParameters",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": "Protocol parameters with BigInt field information",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/BigIntResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Get protocol parameters with BigInt metadata",
+                    "tags": [
+                        "Ogmios"
+                    ]
+                }
+            },
+            "/ogmios/protocol-parameters-simple": {
+                "get": {
+                    "operationId": "OgmiosController_getProtocolParametersSimple",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": "Protocol parameters with BigInt values as strings",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/ProtocolParametersDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Get protocol parameters (BigInt converted to strings)",
+                    "tags": [
+                        "Ogmios"
+                    ]
+                }
+            },
+            "/ogmios/health": {
+                "get": {
+                    "operationId": "OgmiosController_getHealth",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": "Health check result",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/HealthResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Check Ogmios service health",
+                    "tags": [
+                        "Ogmios"
+                    ]
+                }
+            },
+            "/ogmios/query-tip": {
+                "get": {
+                    "operationId": "OgmiosController_queryTip",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": "Current tip",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Get current tip",
+                    "tags": [
+                        "Ogmios"
+                    ]
+                }
+            },
+            "/ogmios/addresses/utxo": {
+                "get": {
+                    "operationId": "OgmiosController_queryUtxoByAddresses",
+                    "parameters": [
+                        {
+                            "name": "addresses",
+                            "required": true,
+                            "in": "query",
+                            "description": "Cardano address(es) to query UTxO. Can be a single address or multiple addresses as array.",
+                            "schema": {
+                                "example": "addr1qx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnjhl2hx3vx0j4w0q3q8qy8q",
+                                "type": "array",
+                                "items": {}
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "UTxO set",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Query UTxO set by addresses",
+                    "tags": [
+                        "Ogmios"
+                    ]
+                }
+            },
+            "/ogmios/address/{address}/utxo": {
+                "get": {
+                    "operationId": "OgmiosController_queryUtxoByAddress",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "required": true,
+                            "in": "path",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "UTxO set",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Query UTxO set",
+                    "tags": [
+                        "Ogmios"
+                    ]
+                }
+            },
+            "/ogmios/tx/{txHash}/utxo": {
+                "get": {
+                    "operationId": "OgmiosController_queryTransaction",
+                    "parameters": [
+                        {
+                            "name": "txHash",
+                            "required": true,
+                            "in": "path",
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Transaction details",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Query transaction by hash",
+                    "tags": [
+                        "Ogmios"
+                    ]
+                }
+            },
+            "/ogmios/txs": {
+                "get": {
+                    "operationId": "OgmiosController_queryTransactions",
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": "Transaction details",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "summary": "Query transactions by hashes",
+                    "tags": [
+                        "Ogmios"
+                    ]
+                }
+            }
+        },
+        "info": {
+            "title": "Hexcore API",
+            "description": "Hexcore API description",
+            "version": "1.0.0",
+            "contact": {},
+            "license": {
+                "name": "MIT",
+                "url": ""
+            }
+        },
+        "tags": [
+            {
+                "name": "Hexcore API",
+                "description": ""
+            }
+        ],
+        "servers": [],
+        "components": {
+            "securitySchemes": {
+                "bearer": {
+                    "scheme": "bearer",
+                    "bearerFormat": "JWT",
+                    "type": "http"
+                }
+            },
+            "schemas": {
+                "AdminLoginDto": {
+                    "type": "object",
+                    "properties": {
+                        "username": {
+                            "type": "string",
+                            "description": "Admin username",
+                            "example": "admin"
+                        },
+                        "password": {
+                            "type": "string",
+                            "description": "Admin password",
+                            "example": "strongpassword123"
+                        }
+                    },
+                    "required": [
+                        "username",
+                        "password"
+                    ]
+                },
+                "CreateAccountDto": {
+                    "type": "object",
+                    "properties": {
+                        "mnemonic": {
+                            "type": "string",
+                            "description": "Mnemonic for the new account",
+                            "example": "day deal mimic mandate model clever network midnight much pudding strategy warrior"
+                        }
+                    },
+                    "required": [
+                        "mnemonic"
+                    ]
+                },
+                "CreateHydraNodeDto": {
+                    "type": "object",
+                    "properties": {
+                        "fromAccountId": {
+                            "type": "number",
+                            "description": "Account ID from which the Hydra node will be created",
+                            "example": 1
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "Description for the Hydra node",
+                            "example": "My first Hydra node"
+                        }
+                    },
+                    "required": [
+                        "fromAccountId",
+                        "description"
+                    ]
+                },
+                "CreatePartyDto": {
+                    "type": "object",
+                    "properties": {
+                        "nodes": {
+                            "type": "number",
+                            "description": "Number of nodes for the party",
+                            "example": 1
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "Description of the party",
+                            "example": "Test Party"
+                        },
+                        "cardanoAccountIds": {
+                            "description": "List of Cardano Account IDs",
+                            "example": [
+                                1
+                            ],
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "nodes",
+                        "description",
+                        "cardanoAccountIds"
+                    ]
+                },
+                "ReqActivePartyDto": {
+                    "type": "object",
+                    "properties": {}
+                },
+                "ReqClearPartyDataDto": {
+                    "type": "object",
+                    "properties": {
+                        "ids": {
+                            "example": [
+                                1,
+                                2,
+                                3
+                            ],
+                            "description": "Array of Hydra Party ID",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "ids"
+                    ]
+                },
+                "BigIntResponseDto": {
+                    "type": "object",
+                    "properties": {
+                        "data": {
+                            "type": "object",
+                            "description": "The actual response data"
+                        },
+                        "bigIntFields": {
+                            "description": "List of field paths that contained BigInt values",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "data"
+                    ]
+                },
+                "ProtocolParametersDto": {
+                    "type": "object",
+                    "properties": {
+                        "maxBlockBodySize": {
+                            "type": "string",
+                            "description": "Maximum block body size in bytes"
+                        },
+                        "maxTransactionSize": {
+                            "type": "string",
+                            "description": "Maximum transaction size in bytes"
+                        },
+                        "minFeeCoefficient": {
+                            "type": "string",
+                            "description": "Minimum fee coefficient A"
+                        },
+                        "minFeeConstant": {
+                            "type": "string",
+                            "description": "Minimum fee constant B"
+                        },
+                        "minUtxoValue": {
+                            "type": "string",
+                            "description": "Minimum UTxO value"
+                        },
+                        "stakePoolDeposit": {
+                            "type": "string",
+                            "description": "Pool deposit"
+                        },
+                        "stakeKeyDeposit": {
+                            "type": "string",
+                            "description": "Key deposit"
+                        }
+                    },
+                    "required": [
+                        "maxBlockBodySize",
+                        "maxTransactionSize",
+                        "minFeeCoefficient",
+                        "minFeeConstant",
+                        "minUtxoValue",
+                        "stakePoolDeposit",
+                        "stakeKeyDeposit"
+                    ]
+                },
+                "HealthResponseDto": {
+                    "type": "object",
+                    "properties": {
+                        "healthy": {
+                            "type": "boolean",
+                            "description": "Whether the service is healthy"
+                        },
+                        "timestamp": {
+                            "type": "string",
+                            "description": "Timestamp of the health check"
+                        }
+                    },
+                    "required": [
+                        "healthy",
+                        "timestamp"
+                    ]
+                }
+            }
+        }
+    },
+    "customOptions": {}
+}
