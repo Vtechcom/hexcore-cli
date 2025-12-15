@@ -1,0 +1,67 @@
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#000000"/>
+  
+  <!-- Header -->
+  <rect width="600" height="30" fill="#0066cc"/>
+  <text x="10" y="22" font-family="monospace" font-size="14" fill="#ffffff" font-weight="bold">
+    hexcore-cli - Hydra Node Manager
+  </text>
+  
+  <!-- Separator -->
+  <text x="10" y="50" font-family="monospace" font-size="12" fill="#888888">
+    ──────────────────────────────────────────────────────
+  </text>
+  
+  <!-- Overview Section -->
+  <text x="10" y="75" font-family="monospace" font-size="13" fill="#ffcc00" font-weight="bold">
+    ⭐ OVERVIEW
+  </text>
+  <text x="10" y="100" font-family="monospace" font-size="12" fill="#ffffff">
+    Running Nodes: 1 | Running Heads: 3 | Total: 5
+  </text>
+  
+  <!-- Separator -->
+  <text x="10" y="125" font-family="monospace" font-size="12" fill="#888888">
+    ──────────────────────────────────────────────────────
+  </text>
+  
+  <!-- Quick Actions Section -->
+  <text x="10" y="150" font-family="monospace" font-size="13" fill="#ffcc00" font-weight="bold">
+    ⚡ QUICK ACTIONS
+  </text>
+  <text x="10" y="175" font-family="monospace" font-size="12" fill="#00ff00" font-weight="bold">
+    > [1] Create New Head
+  </text>
+  <text x="10" y="200" font-family="monospace" font-size="12" fill="#ffffff">
+    [2] View All Heads
+  </text>
+  <text x="10" y="225" font-family="monospace" font-size="12" fill="#ffffff">
+    [3] Stop Head
+  </text>
+  <text x="10" y="250" font-family="monospace" font-size="12" fill="#ffffff">
+    [4] Wallet Accounts
+  </text>
+  <text x="10" y="275" font-family="monospace" font-size="12" fill="#ffffff">
+    [5] Nodes List
+  </text>
+  <text x="10" y="300" font-family="monospace" font-size="12" fill="#ffffff">
+    [6] Health Status
+  </text>
+  
+  <!-- Input Prompt -->
+  <text x="10" y="330" font-family="monospace" font-size="12" fill="#ffffff">
+    Enter selection (1-6): █
+  </text>
+  
+  <!-- Separator -->
+  <text x="10" y="355" font-family="monospace" font-size="12" fill="#888888">
+    ──────────────────────────────────────────────────────
+  </text>
+  
+  <!-- Status Bar -->
+  <rect y="370" width="600" height="30" fill="#00cc00"/>
+  <text x="10" y="392" font-family="monospace" font-size="12" fill="#ffffff" font-weight="bold">
+    ✓ All systems operational | Last update: 2s ago
+  </text>
+</svg>
