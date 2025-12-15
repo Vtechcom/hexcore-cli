@@ -1,6 +1,6 @@
 {
     "name": "hexcore-cli",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "description": "Terminal UI for managing Hydra Nodes",
     "main": "dist/src/main.js",
     "bin": {
@@ -14,7 +14,10 @@
         "test:watch": "vitest --watch",
         "lint": "eslint src --ext .ts",
         "clean": "rm -rf dist",
-        "format": "prettier --write \"src/**/*.ts\""
+        "format": "prettier --write \"src/**/*.ts\"",
+        "pkg:linux": "pkg . --targets node18-linux-x64 --no-bytecode --out-path release",
+        "pkg:mac": "pkg . --targets node18-macos-arm64,node18-macos-x64 --no-bytecode --out-path release",
+        "pkg:win": "pkg . --targets node18-win-x64 --no-bytecode --out-path release"
     },
     "keywords": [
         "hydra",
@@ -39,6 +42,7 @@
         "@typescript-eslint/eslint-plugin": "^6.17.0",
         "@typescript-eslint/parser": "^6.17.0",
         "eslint": "^8.56.0",
+        "pkg": "^5.8.1",
         "prettier": "^3.7.4",
         "ts-node": "^10.9.2",
         "typescript": "^5.3.3",
@@ -46,5 +50,14 @@
     },
     "engines": {
         "node": ">=18.0.0"
+    },
+    "pkg": {
+        "assets": [
+            "dist/**/*",
+            "node_modules/axios/**/*"
+        ],
+        "scripts": [
+            "dist/**/*.js"
+        ]
     }
 }
