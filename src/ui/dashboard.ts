@@ -12,6 +12,7 @@ import {
     waitForKeyPress,
     clearScreen,
 } from './components';
+import { WalletAccount } from '../interfaces/wallet-account.type';
 
 export interface DashboardConfig {
     api: ApiClient;
@@ -39,6 +40,9 @@ export class Dashboard {
         totalHeads: number;
         status: string;
     } | null = null;
+
+    // Setup datasource
+    private walletAccounts: WalletAccount[] = [];
 
     constructor(config: DashboardConfig) {
         this.api = config.api;

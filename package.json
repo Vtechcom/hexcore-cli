@@ -29,7 +29,10 @@
     "author": "Ania",
     "license": "MIT",
     "dependencies": {
+        "@hydra-sdk/cardano-wasm": "^0.0.5",
+        "@hydra-sdk/core": "^1.1.5",
         "axios": "^1.6.2",
+        "bignumber.js": "^9.3.1",
         "bip39": "^3.1.0",
         "blessed": "^0.1.81",
         "chalk": "^5.3.0",
@@ -54,10 +57,14 @@
     "pkg": {
         "assets": [
             "dist/**/*",
-            "node_modules/axios/**/*"
+            "node_modules/axios/**/*",
+            "node_modules/@hydra-sdk/**/*.wasm",
+            "node_modules/@hydra-sdk/**/*.node"
         ],
         "scripts": [
-            "dist/**/*.js"
-        ]
+            "dist/**/*.js",
+            "node_modules/@hydra-sdk/**/*.js"
+        ],
+        "outputPath": "release"
     }
 }

@@ -87,3 +87,97 @@ export function clearScreen(screen: blessed.Widgets.Screen): void {
     }
     screen.render();
 }
+
+export interface ProgressBoxControls {
+    updateProgress: (percent: number) => void;
+    setMessage: (message: string) => void;
+    close: () => void;
+}
+
+/**
+ * Show a progress box with message, progress bar, and spinner
+ */
+export function showProgressBox(
+    screen: blessed.Widgets.Screen,
+    message: string,
+    showSpinner: boolean = true,
+): ProgressBoxControls {
+    const box = blessed.box({
+        parent: screen,
+        top: 'center',
+        left: 'center',
+        width: 60,
+        height: 10,
+        border: 'line',
+        style: { fg: 'white', border: { fg: 'blue' } },
+        tags: true,
+    });
+
+    const messageText = blessed.text({
+        parent: box,
+        top: 1,
+        left: 2,
+        width: '100%-4',
+        content: message,
+        style: { fg: 'white' },
+        tags: true,
+    });
+
+    const progressBar = blessed.progressbar({
+        parent: box,
+        top: 4,
+        left: 2,
+        width: '100%-4',
+        height: 1,
+        orientation: 'horizontal',
+        style: {
+            bar: { bg: 'blue' },
+            fg: 'white',
+        },
+        filled: 0,
+    });
+
+    let spinnerText: blessed.Widgets.TextElement | null = null;
+    let spinnerInterval: NodeJS.Timeout | null = null;
+
+    if (showSpinner) {
+        const spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+        let frameIndex = 0;
+
+        spinnerText = blessed.text({
+            parent: box,
+            top: 6,
+            left: 'center',
+            content: spinnerFrames[0],
+            style: { fg: 'cyan' },
+        });
+
+        spinnerInterval = setInterval(() => {
+            frameIndex = (frameIndex + 1) % spinnerFrames.length;
+            if (spinnerText) {
+                spinnerText.setContent(spinnerFrames[frameIndex]);
+                screen.render();
+            }
+        }, 80);
+    }
+
+    screen.render();
+
+    return {
+        updateProgress: (percent: number) => {
+            progressBar.setProgress(percent);
+            screen.render();
+        },
+        setMessage: (newMessage: string) => {
+            messageText.setContent(newMessage);
+            screen.render();
+        },
+        close: () => {
+            if (spinnerInterval) {
+                clearInterval(spinnerInterval);
+            }
+            box.detach();
+            screen.render();
+        },
+    };
+}

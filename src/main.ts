@@ -14,15 +14,16 @@ program
     .requiredOption('--url <url>', 'API server URL (e.g., https://api.hexcore.io.vn)')
     .option('-u, --username <username>', 'Username for authentication')
     .option('-p, --password <password>', 'Password for authentication')
+    .option('-bf, --blockfrost-api-key <key>', 'Blockfrost API key for Cardano network access')
     .action(async options => {
         try {
             const url = options.url;
-
             // Create API client with URL configuration
             const apiClient = new ApiClient({
                 url: url,
                 username: options.username,
                 password: options.password,
+                blockfrostApiKey: options.blockfrostApiKey,
             });
 
             // Login if credentials provided
@@ -185,10 +186,14 @@ program
                     });
                     const accounts = await apiClient.getAccounts();
                     console.log('\n💰 Wallet Accounts:\n');
-                    console.log('Account ID'.padEnd(20) + 'Address'.padEnd(50) + 'Status');
-                    console.log('─'.repeat(80));
+                    console.log('ID'.padEnd(12) + 'Base Address'.padEnd(68) + 'Created');
+                    console.log('─'.repeat(100));
                     accounts.forEach(account => {
-                        console.log(account.id.padEnd(20) + account.address.padEnd(50) + account.status);
+                        console.log(
+                            account.id.toString().padEnd(12) +
+                                account.baseAddress.padEnd(68) +
+                                new Date(account.createdAt).toLocaleString(),
+                        );
                     });
                     console.log();
                 } catch (error) {

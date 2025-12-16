@@ -1,12 +1,16 @@
 import axios, { AxiosInstance } from 'axios';
+import type { ApiResponse } from '../interfaces/api/response-factory.type';
+import type { HydraHead } from '../interfaces/api/hydra-nodes/hydra-heads.type';
+import type { HydraNode } from '../interfaces/api/hydra-nodes/hydra-node.type';
+import type { WalletAccount } from '../interfaces/wallet-account.type';
+import { Converter, NETWORK_ID, ProviderUtils, UTxOObject } from '@hydra-sdk/core';
 
 export interface ApiConfig {
-    host?: string;
-    port?: number;
-    url?: string;
+    url: string;
     timeout?: number;
     username?: string;
     password?: string;
+    blockfrostApiKey?: string;
 }
 
 export interface AuthResponse {
@@ -18,36 +22,10 @@ export interface AuthResponse {
     status: string;
 }
 
-export interface Head {
-    id: number;
-    description: string | null;
-    nodes: number;
-    status: 'ACTIVE' | 'INACTIVE';
-    createdAt: string;
-    hydraNodes: Array<Node>;
-}
-
-export interface Account {
-    id: string;
-    address: string;
-    status: 'active' | 'inactive';
-    createdAt: string;
-}
-
-export interface Node {
-    id: number;
-    description: string;
-    port: number;
-    vkey: string;
-    createdAt: string;
-    cardanoAccount: {
-        id: number;
-        baseAddress: string;
-        pointerAddress: string;
-        createdAt: string;
-    };
-    status: 'ACTIVE' | 'INACTIVE';
-}
+// Type aliases for backward compatibility
+export type Head = HydraHead;
+export type Node = HydraNode;
+export type Account = WalletAccount;
 
 export interface ActiveNode {
     hydraNodeId: string;
@@ -116,19 +94,15 @@ export class ApiClient {
     private username: string = '';
     private password: string = '';
 
+    private blockfrostProvider: ProviderUtils.BlockfrostProvider | null = null;
+    private blockfrostApiKey: string = '';
+
     constructor(config: ApiConfig) {
         this.config = { timeout: 60000, ...config };
         this.username = config.username || '';
         this.password = config.password || '';
-
-        // Support both URL format and host:port format
-        if (config.url) {
-            this.baseUrl = config.url;
-        } else {
-            const host = config.host || 'localhost';
-            const port = config.port || 3013;
-            this.baseUrl = `http://${host}:${port}`;
-        }
+        this.blockfrostApiKey = config.blockfrostApiKey || '';
+        this.baseUrl = this.config.url;
 
         this.client = axios.create({
             baseURL: this.baseUrl,
@@ -137,6 +111,28 @@ export class ApiClient {
                 'Content-Type': 'application/json',
             },
         });
+
+        if (this.blockfrostApiKey) {
+            // check valid api key format
+            const prefixes = ['mainnet', 'preview', 'preprod', 'ipfs'];
+            const isValid = prefixes.some(prefix => this.blockfrostApiKey.startsWith(prefix));
+            if (!isValid) {
+                console.warn('⚠️  Warning: The provided Blockfrost API key may be invalid.');
+            }
+            let network: 'mainnet' | 'preview' | 'preprod' = 'mainnet';
+            if (this.blockfrostApiKey.startsWith('preview')) {
+                network = 'preview';
+            } else if (this.blockfrostApiKey.startsWith('preprod')) {
+                network = 'preprod';
+            } else {
+                throw new Error('Unsupported Blockfrost API key network. Supported: mainnet, preview, preprod');
+            }
+
+            this.blockfrostProvider = new ProviderUtils.BlockfrostProvider({
+                apiKey: this.blockfrostApiKey,
+                network,
+            });
+        }
 
         // Add token to requests after login
         this.client.interceptors.request.use(configAxios => {
@@ -176,27 +172,27 @@ export class ApiClient {
         return !!this.accessToken;
     }
 
-    async getHeads(): Promise<Head[]> {
+    async getHeads(): Promise<HydraHead[]> {
         try {
-            const response = await this.client.get('/hydra-main/active-nodes');
+            const response = await this.client.get<any>('/hydra-main/active-nodes');
             return response.data || [];
         } catch (error) {
             throw this.handleError(error, 'Failed to fetch heads');
         }
     }
 
-    async getHeadInfo(headId: string): Promise<Head> {
+    async getHeadInfo(headId: string): Promise<HydraHead> {
         try {
-            const response = await this.client.get(`/hydra-main/hydra-node/${headId}`);
+            const response = await this.client.get<any>(`/hydra-main/hydra-node/${headId}`);
             return response.data;
         } catch (error) {
             throw this.handleError(error, `Head '${headId}' not found`);
         }
     }
 
-    async createHead(accountIds: string[]): Promise<Head> {
+    async createHead(accountIds: string[]): Promise<HydraHead> {
         try {
-            const response = await this.client.post('/hydra-main/create-node', {
+            const response = await this.client.post<any>('/hydra-main/create-node', {
                 fromAccountId: accountIds[0] || 1,
                 description: `Hydra Node`,
             });
@@ -214,18 +210,18 @@ export class ApiClient {
         }
     }
 
-    async getAccounts(): Promise<Account[]> {
+    async getAccounts(): Promise<WalletAccount[]> {
         try {
-            const response = await this.client.get('/hydra-main/list-account');
+            const response = await this.client.get<any>('/hydra-main/list-account');
             return response.data || [];
         } catch (error) {
             throw this.handleError(error, 'Failed to fetch accounts');
         }
     }
 
-    async addAccount(mnemonic: string): Promise<Account> {
+    async addAccount(mnemonic: string): Promise<WalletAccount> {
         try {
-            const response = await this.client.post('/hydra-main/create-account', {
+            const response = await this.client.post<any>('/hydra-main/create-account', {
                 mnemonic,
             });
             return response.data;
@@ -234,10 +230,10 @@ export class ApiClient {
         }
     }
 
-    async getNodes(): Promise<Node[]> {
+    async getNodes(): Promise<HydraNode[]> {
         try {
-            const response = await this.client.get('/hydra-main/hydra-nodes?page=1&limit=50');
-            return response.data?.data || response.data || [];
+            const response = await this.client.get<any>('/hydra-main/hydra-nodes?page=1&limit=50');
+            return response.data || [];
         } catch (error) {
             throw this.handleError(error, 'Failed to fetch nodes');
         }
@@ -246,22 +242,30 @@ export class ApiClient {
     async getSystemStatus(): Promise<SystemStatus> {
         try {
             const [nodesRes, activeRes, headsRes] = await Promise.allSettled([
-                this.client.get<{ data: Node[] }>('/hydra-main/hydra-nodes?page=1&limit=1000'),
-                this.client.get<ActiveNode[]>('/hydra-main/active-nodes'),
-                this.client.get<Head[]>('/hydra-main/list-party'),
+                this.client.get<any>('/hydra-main/hydra-nodes?page=1&limit=1000'),
+                this.client.get<any>('/hydra-main/active-nodes'),
+                this.client.get<any>('/hydra-main/list-party'),
             ]);
 
-            const nodes = nodesRes.status === 'fulfilled' ? nodesRes.value.data?.data || nodesRes.value.data || [] : [];
-            const activeNodes = activeRes.status === 'fulfilled' ? activeRes.value.data || [] : [];
-            const activeHeads = headsRes.status === 'fulfilled' ? headsRes.value.data || [] : [];
+            /**
+             * return by pagination:
+             * `{
+             *  data: HydraNode[],
+             *  hasNext: boolean,
+             *  page: number,
+             * }`
+             */
+            const nodes: HydraNode[] = nodesRes.status === 'fulfilled' ? nodesRes.value.data.data || [] : [];
+            const activeNodes: ActiveNode[] = activeRes.status === 'fulfilled' ? activeRes.value.data || [] : [];
+            const activeHeads: HydraHead[] = headsRes.status === 'fulfilled' ? headsRes.value.data || [] : [];
 
-            const runningHeads = activeNodes.reduce((headIds, node) => {
+            const runningHeads = activeNodes.reduce((headIds: string[], node: ActiveNode) => {
                 if (node.isActive && !headIds.includes(node.hydraNodeId)) {
                     headIds.push(node.hydraNodeId);
                 }
                 return headIds;
             }, [] as string[]).length;
-            const runningNodes = nodes.filter((n: Node) => n.status === 'ACTIVE').length;
+            const runningNodes = nodes.filter((n: HydraNode) => n.status === 'ACTIVE').length;
 
             return {
                 runningNodes,
@@ -273,6 +277,21 @@ export class ApiClient {
             console.log('>>> / client.ts:202 / error:', error);
 
             throw this.handleError(error, 'Failed to fetch system status');
+        }
+    }
+
+    async fetchUtxoByAddress(address: string): Promise<UTxOObject> {
+        try {
+            if (this.blockfrostProvider) {
+                const utxo = await this.blockfrostProvider.fetcher.fetchAddressUTxOs(address);
+                return Converter.convertUTxOToUTxOObject(utxo);
+            }
+            const response = await this.client.get<any>(`/hydra-main/utxo/${address}`, {
+                timeout: 120000,
+            });
+            return response.data;
+        } catch (error) {
+            throw this.handleError(error, `Failed to fetch UTxO for address ${address}`);
         }
     }
 
