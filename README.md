@@ -58,7 +58,11 @@ npm run pkg:win      # Windows x64
 
 ## 📊 Dashboard
 
-![hexcore-cli Dashboard](./docs/screenshot.png)
+Example screenshot of the hexcore-cli dashboard:
+![hexcore-cli Dashboard](./docs/screenshot-01.png)
+![hexcore-cli Heads Management](./docs/screenshot-02.png)
+![hexcore-cli Accounts](./docs/screenshot-03.png)
+
 
 ```
  hexcore-cli - Hydra Node Manager
