@@ -1,6 +1,6 @@
 {
     "name": "hexcore-cli",
-    "version": "0.0.1",
+    "version": "0.0.1-alpha.3",
     "description": "Terminal UI for managing Hydra Nodes",
     "main": "dist/src/main.js",
     "bin": {
