@@ -174,7 +174,7 @@ export class ApiClient {
 
     async getHeads(): Promise<HydraHead[]> {
         try {
-            const response = await this.client.get<any>('/hydra-main/active-nodes');
+            const response = await this.client.get<any>('/hydra-main/list-party');
             return response.data || [];
         } catch (error) {
             throw this.handleError(error, 'Failed to fetch heads');
@@ -207,6 +207,36 @@ export class ApiClient {
             await this.client.post(`/hydra-main/hydra-node/${headId}/stop`);
         } catch (error) {
             throw this.handleError(error, `Failed to stop head '${headId}'`);
+        }
+    }
+
+    async deactiveCluster(clusterId: number): Promise<void> {
+        try {
+            await this.client.post(`/hydra-main/deactive-party`, {
+                id: clusterId,
+            });
+        } catch (error) {
+            throw this.handleError(error, `Failed to deactivate party '${clusterId}'`);
+        }
+    }
+
+    async clearClusterPersistence(clusterIds: number[]): Promise<void> {
+        try {
+            await this.client.post(`/hydra-main/clear-party-data`, {
+                ids: clusterIds,
+            });
+        } catch (error) {
+            throw this.handleError(error, `Failed to clear party data '${clusterIds.join(', ')}'`);
+        }
+    }
+
+    async activeCluster(clusterId: number): Promise<void> {
+        try {
+            await this.client.post(`/hydra-main/active-party`, {
+                id: clusterId,
+            });
+        } catch (error) {
+            throw this.handleError(error, `Failed to activate party '${clusterId}'`);
         }
     }
 

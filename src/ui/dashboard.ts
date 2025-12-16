@@ -83,7 +83,7 @@ export class Dashboard {
                 this.suppressNextKeypress = false;
                 return;
             }
-            this.menuSelection = Math.min(6, this.menuSelection + 1);
+            this.menuSelection = Math.min(5, this.menuSelection + 1);
             if (this.menuControls) this.menuControls.updateMenuSelection(this.menuSelection);
         });
 
@@ -96,7 +96,7 @@ export class Dashboard {
             this.handleMenuSelection(this.menuSelection);
         });
 
-        this.screen.key(['1', '2', '3', '4', '5', '6'], ch => {
+        this.screen.key(['1', '2', '3', '4', '5'], ch => {
             if (this.currentView !== 'menu') return;
             if (this.suppressNextKeypress) {
                 this.suppressNextKeypress = false;
@@ -191,18 +191,14 @@ export class Dashboard {
                     await showHeadsList(this.screen, this.api);
                     break;
                 case 3:
-                    this.currentView = 'heads';
-                    await showStopHeadFlow(this.screen, this.api);
-                    break;
-                case 4:
                     this.currentView = 'accounts';
                     await showAccountsFlow(this.screen, this.api);
                     break;
-                case 5:
+                case 4:
                     this.currentView = 'nodes';
                     await showNodesList(this.screen, this.api);
                     break;
-                case 6:
+                case 5:
                     this.currentView = 'status';
                     await showStatus(this.screen, this.api);
                     break;

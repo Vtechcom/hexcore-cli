@@ -10,7 +10,7 @@ export async function showStatus(screen: blessed.Widgets.Screen, api: ApiClient)
     try {
         const status = await api.getSystemStatus();
         const content = `
- 📊 System Status
+ ⎇  System Status
  
  Running Nodes:    ${status.runningNodes}
  Running Heads:    ${status.runningHeads}
