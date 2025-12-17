@@ -190,11 +190,12 @@ export class ApiClient {
         }
     }
 
-    async createHead(accountIds: string[]): Promise<HydraHead> {
+    async createCluster(accountIds: number[]): Promise<HydraHead> {
         try {
-            const response = await this.client.post<any>('/hydra-main/create-node', {
-                fromAccountId: accountIds[0] || 1,
-                description: `Hydra Node`,
+            const response = await this.client.post<any>('/hydra-main/create-party', {
+                cardanoAccountIds: accountIds,
+                nodes: accountIds.length,
+                description: 'Created via CLI',
             });
             return response.data;
         } catch (error) {

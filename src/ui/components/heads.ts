@@ -2,6 +2,9 @@ import * as blessed from 'blessed';
 import { ApiClient, Head } from '../../api/client';
 import { formatTime } from '../../utils/validators';
 import { displayList, showError, showMessage, waitForKeyPress, clearScreen, showProgressBox } from './common';
+import { formatDate, formatId } from '../../utils/format';
+import { Converter } from '@hydra-sdk/core';
+import { BigNumber } from 'bignumber.js';
 
 /**
  * Heads management component
@@ -10,15 +13,179 @@ import { displayList, showError, showMessage, waitForKeyPress, clearScreen, show
 export async function showCreateHeadFlow(screen: blessed.Widgets.Screen, api: ApiClient): Promise<void> {
     try {
         const accounts = await api.getAccounts();
+
+        // Check if accounts exist
         if (accounts.length === 0) {
-            showError(screen, 'No accounts available. Go to [4] Wallet Accounts');
+            clearScreen(screen);
+
+            blessed.box({
+                parent: screen,
+                content:
+                    '\n\n {red-fg}✗ No Account Available{/}\n\n Please go to [3] Wallet Accounts to create accounts first.',
+                top: 'center',
+                left: 'center',
+                width: 60,
+                height: 7,
+                border: 'line',
+                tags: true,
+                style: { fg: 'white', border: { fg: 'red' } },
+            });
+
+            screen.render();
+            await waitForKeyPress(screen);
+            clearScreen(screen);
             return;
         }
 
-        // Show account selection UI
-        showMessage(screen, 'Account selection (Space: select, Enter: confirm, ESC: cancel)');
+        // Account selection UI
+        let selectedIndex = 0;
+        const selectedAccounts = new Set<number>();
+        let shouldExit = false;
+        let shouldConfirm = false;
+
+        while (!shouldExit && !shouldConfirm) {
+            clearScreen(screen);
+
+            // Build account selection table
+            let content = '\n Create New Head - Select Accounts\n\n';
+            content += ' Use ↑↓ to navigate, Space to select/deselect, Enter to confirm\n\n';
+
+            const header = [
+                { label: '⌥', width: 1 },
+                { label: '[ ]', width: 3 },
+                { label: 'ID', width: 12 },
+                { label: 'Base Address', width: 24 },
+                { label: 'Enterprise Address', width: 64 },
+                { label: 'Created', width: 20 },
+            ];
+            const headerLine = header.map(c => c.label.padEnd(c.width)).join(' ');
+            const separator = header.map(c => '─'.repeat(c.width)).join(' ');
+
+            const rows = accounts
+                .sort((a, b) => b.id - a.id)
+                .map((account, index) => {
+                    const isSelected = index === selectedIndex;
+                    const isChecked = selectedAccounts.has(account.id);
+                    const cursor = isSelected ? '>' : ' ';
+                    const checkbox = isChecked ? '[✓]' : '[ ]';
+                    return [
+                        cursor,
+                        checkbox,
+                        isChecked
+                            ? `{green-fg}${account.id.toString().padEnd(header[2].width)}{/}`
+                            : account.id.toString(),
+                        isChecked
+                            ? `{green-fg}${formatId(account.baseAddress, 8, 8).padEnd(header[3].width)}{/}`
+                            : formatId(account.baseAddress, 8, 8),
+                        isChecked
+                            ? `{green-fg}${account.pointerAddress.padEnd(header[4].width)}{/}`
+                            : account.pointerAddress,
+                        isChecked
+                            ? `{green-fg}${formatDate(account.createdAt).padEnd(header[5].width)}{/}`
+                            : formatDate(account.createdAt),
+                    ];
+                });
+            content += `\n ${headerLine}\n ${separator}\n`;
+            rows.forEach(row => {
+                const line = header.map((c, i) => (row[i] || '').toString().padEnd(c.width)).join(' ');
+                content += ` ${line}\n`;
+            });
+
+            content += `\n Selected: ${selectedAccounts.size} account(s)\n`;
+
+            blessed.box({
+                parent: screen,
+                content,
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%-2',
+                scrollable: true,
+                tags: true,
+                style: { fg: 'white' },
+            });
+
+            blessed.box({
+                parent: screen,
+                content: 'Space: Select | Enter: Confirm | ESC: Cancel',
+                bottom: 0,
+                left: 0,
+                width: '100%',
+                height: 1,
+                style: { bg: 'blue', fg: 'white' },
+            });
+
+            screen.render();
+
+            // Handle key presses
+            const action = await new Promise<string>(resolve => {
+                screen.once('keypress', (_ch: any, key: any) => {
+                    resolve(key?.name || 'exit');
+                });
+            });
+
+            if (action === 'up' || action === 'k') {
+                selectedIndex = Math.max(0, selectedIndex - 1);
+            } else if (action === 'down' || action === 'j') {
+                selectedIndex = Math.min(accounts.length - 1, selectedIndex + 1);
+            } else if (action === 'space') {
+                const accountId = accounts[selectedIndex].id;
+                if (selectedAccounts.has(accountId)) {
+                    selectedAccounts.delete(accountId);
+                } else {
+                    selectedAccounts.add(accountId);
+                }
+            } else if (action === 'enter' || action === 'return') {
+                if (selectedAccounts.size > 0) {
+                    shouldConfirm = true;
+                }
+            } else if (action === 'escape') {
+                shouldExit = true;
+            }
+        }
+
+        if (shouldConfirm && selectedAccounts.size > 0) {
+            // Call API to create head
+            const progress = showProgressBox(screen, 'Creating new head...', true);
+
+            try {
+                const accountIds = Array.from(selectedAccounts);
+                const newHead = await api.createCluster(accountIds);
+
+                progress.setMessage('✓ Head created successfully!');
+                progress.updateProgress(100);
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                progress.close();
+
+                // Show success message with recommendation
+                clearScreen(screen);
+
+                blessed.box({
+                    parent: screen,
+                    content: `\n\n {green-fg}✓ Head Created Successfully!{/}\n\n Head ID: ${newHead.id}\n Accounts: ${selectedAccounts.size}\n\n {yellow-fg}→ Go to [2] Heads Management to manage this head{/}`,
+                    top: 'center',
+                    left: 'center',
+                    width: 60,
+                    height: 11,
+                    border: 'line',
+                    tags: true,
+                    style: { fg: 'white', border: { fg: 'green' } },
+                });
+
+                screen.render();
+                await waitForKeyPress(screen);
+            } catch (error) {
+                progress.setMessage(`✗ Error: ${(error as Error).message}`);
+                await new Promise(resolve => setTimeout(resolve, 2500));
+                progress.close();
+            }
+        }
+
+        clearScreen(screen);
     } catch (error) {
         showError(screen, (error as Error).message);
+        await waitForKeyPress(screen);
+        clearScreen(screen);
     }
 }
 
