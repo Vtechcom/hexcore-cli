@@ -2,6 +2,8 @@
 
 Terminal UI for managing Hydra Nodes - A blessed-based Node.js CLI for real-time node operations.
 
+> **Note:** hexcore-cli alpha is designed for hexcore v0.0.1-alpha
+
 ## 🎯 Features
 
 ### Dashboard & Navigation
@@ -11,14 +13,29 @@ Terminal UI for managing Hydra Nodes - A blessed-based Node.js CLI for real-time
 
 ### Heads Management
 - **Create New Head** - Initialize Hydra heads with account selection
+  - **Account Validation** - Checks for available wallet accounts
+  - **Multi-select Interface** - Select one or multiple accounts using Space key
+  - **Real-time Progress** - Animated progress bar during head creation
+  - **Success Confirmation** - Clear feedback with recommendation to view in Heads Management
+  - **Navigation Flow:**
+    1. Press `1` from main menu
+    2. If no accounts exist → Shows error with instruction to create accounts first
+    3. If accounts available → Shows selection table with:
+       - Account ID, Base Address, Enterprise Address, Creation Date
+       - Checkbox indicators `[ ]` for unselected, `[✓]` for selected
+       - Selected accounts highlighted in green
+    4. Use `↑↓` to navigate, `Space` to select/deselect accounts
+    5. Press `Enter` to confirm and create head
+    6. Progress bar shows creation status
+    7. Success screen displays new head ID and recommends going to Heads Management
 - **Heads List View** - Tree-style display with scrollable interface
   - Color-coded status (🟢 ACTIVE / 🔴 INACTIVE)
   - Hierarchical node display with WebSocket URLs
   - Navigate with ↑↓ keys, Enter to view details
 - **Head Detail View** - Complete management interface
-  - **[S]** Stop Party (`/hydra-main/deactive-party`)
-  - **[C]** Clear Persistence Data (`/hydra-main/clear-party-data`)
-  - **[R]** Start/Restart Party (`/hydra-main/active-party`)
+  - **[S]** Stop Cluster (`/hydra-main/deactive-cluster`)
+  - **[C]** Clear Persistence Data (`/hydra-main/clear-cluster-persistence`)
+  - **[R]** Start/Restart Cluster (`/hydra-main/active-cluster`)
   - Progress bars with spinners for all operations
 
 ### Account Management
@@ -92,14 +109,22 @@ Example screenshot of the hexcore-cli dashboard:
 | `Enter` / `Space` | Confirm selection |
 | `Escape` / `q` / `Ctrl+C` | Exit |
 
+### Create New Head
+| Key | Action |
+|-----|--------|
+| `↑↓` / `j/k` | Navigate account list |
+| `Space` | Select/deselect account |
+| `Enter` | Confirm selection and create head |
+| `Escape` | Cancel and return to menu |
+
 ### Heads Management
 | Key | Action |
 |-----|--------|
 | `↑↓` | Select head in list |
 | `Enter` | View head details |
-| `S` | Stop party (in detail view) |
+| `S` | Stop cluster (in detail view) |
 | `C` | Clear persistence data |
-| `R` | Start/Restart party |
+| `R` | Start/Restart cluster |
 
 ### Accounts
 | Key | Action |
@@ -134,9 +159,10 @@ npm run build && npm test --silent
 | `/hydra-main/active-nodes` | GET | List all heads |
 | `/hydra-main/hydra-nodes` | GET | List all nodes |
 | `/hydra-main/list-account` | GET | List wallet accounts |
-| `/hydra-main/deactive-party/:id` | POST | Stop party |
-| `/hydra-main/clear-party-data/:id` | DELETE | Clear data |
-| `/hydra-main/active-party/:id` | POST | Start party |
+| `/hydra-main/create-node` | POST | Create new head with accounts |
+| `/hydra-main/deactive-cluster/:id` | POST | Stop cluster |
+| `/hydra-main/clear-cluster-persistence` | DELETE | Clear persistence data |
+| `/hydra-main/active-cluster/:id` | POST | Start cluster |
 
 ## 🎨 UI Components
 
@@ -161,4 +187,4 @@ npm run build && npm test --silent
 
 ---
 
-**Version:** 0.0.1 | **License:** MIT | **Updated:** December 16, 2025
+**Version:** 0.0.1-alpha.3 | **License:** Apache 2.0 | **Updated:** December 17, 2025
