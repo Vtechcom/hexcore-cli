@@ -58,12 +58,11 @@
         "assets": [
             "dist/**/*",
             "node_modules/axios/**/*",
-            "node_modules/@hydra-sdk/**/*.wasm",
-            "node_modules/@hydra-sdk/**/*.node"
+            "node_modules/@hydra-sdk/**/*",
+            "node_modules/@hydra-sdk/core/node_modules/**/*"
         ],
         "scripts": [
-            "dist/**/*.js",
-            "node_modules/@hydra-sdk/**/*.js"
+            "dist/**/*.js"
         ],
         "outputPath": "release"
     }
